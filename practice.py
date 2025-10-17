@@ -62,17 +62,27 @@ class Order:
             self.price_at_order += pay_quantity * product.price
         return "Продукт добавлен в заказ"
 
-    def set_customer(self, new_customer: Customer):
-        if isinstance(new_customer, Customer):
-            self.customer = new_customer
-        else:
-            raise ValueError("Переданные объект не относится к классу покупателя")
-
     def get_total_price(self):
         return f"Общая стоимость заказа - {self.price_at_order}"
 
     def pay_order(self):
-        
+        if self.customer.balance < self.price_at_order:
+            raise ValueError("Недостаточно средств для оплаты заказа")
+        self.customer.balance -= self.price_at_order
+        # уменьшаем кол-во продуктов на складе
+        for product, quantity in self.product_list:
+            product.set_new_quantity(quantity)
+        # меняем статус заказа
+        self.status = "paid"
+
+    def cancel_order(self):
+        if self.status != "canceled":
+            raise ValueError("Нельзя отменить неоплаченный заказ")
+        self.customer.balance += self.price_at_order
+        self.status = "canceled"
+        for product, quantity in self.product_list:
+            product.quantity += quantity
+
     def __str__(self):
         list_to_str = "\n".join(str(element) for element in self.product_list)
         return f"Список товаров в заказе - [{list_to_str}], статус заказа - {self.status}, стоимость заказа - {self.price_at_order}, покупатель - {self.customer.name}"
@@ -80,15 +90,19 @@ class Order:
 
 potato = Product("Картофель", 30, 7)
 # print(potato)
-
+chips = Product("Чипсы Lays", 125, 15)
 nikita = Customer("Никита", "nikita@mail.ru", 1500)
 # print(nikita)
 
 order1 = Order(nikita)
-# print(order1)
+print(order1)
 order1.add_product(potato, 4)
-print("Заказ пользователя ---", order1)
-order1.pay_order(product=potato, customer=nikita, pay_quantity=4)
+order1.add_product(chips, 2)
+print("Заказ пользователя --->", order1)
+order1.pay_order()
 print("Заказ был оплачен ---", order1)
 print("Данные покупателя --- ", nikita)
+order1.cancel_order()
+print("Данные о товаре ---", chips)
 print("Данные о товаре ---", potato)
+print("Данные покупателя --- ", nikita)
