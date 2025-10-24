@@ -1,35 +1,37 @@
-import random
+class Point:
+    MAX_COORD = 100
+    MIN_COORD = 0
+
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+    def set_coord(self, x, y):
+        if Point.MIN_COORD <= x <= Point.MAX_COORD:
+            self.x = x
+            self.y = y
+
+    def __getattribute__(self, name):
+        if name == "x":
+            raise ValueError("Доступ запрещен")
+        else:
+            return object.__getattribute__(self, name)
+
+    def __setattr__(self, name, value):
+        if name == "z":
+            raise AttributeError("недопустимое имя атрибута")
+        else:
+            object.__setattr__(self, name, value)
+
+    def __getattr__(self, name):
+        return False
+
+    def __delattr__(self, name):
+        print("__delattr__" + name)
+        object.__delattr__(self, name)
 
 
-class Account:
-    def __init__(self, owner: str, balance: int):
-        self._account_id = random.randint(1, 25)
-        self.owner = owner
-        self._balance = balance
-
-    def deposit(self, amount: int):
-        if amount > 0:
-            self._balance += amount
-        return "Счет пополнен"
-
-    def withdraw(self, amount: int):
-        if amount > 0 and self._balance > amount:
-            self._balance -= amount
-        return "Деньги сняты со счета"
-
-    @property
-    def balance(self):
-        return self._balance
-
-    @balance.setter
-    def balance(self, value):
-        if isinstance(value, (float, int)) and value > 0:
-            self._balance = value
-
-    def __str__(self):
-        return f"Account id - {self._account_id}, владелец - {self.owner}, баланс - {self._balance}"
-
-
-acc1 = Account("Stepa", 15000)
-print(acc1)
-print(acc1.balance)
+pt1 = Point(1, 2)
+pt2 = Point(10, 20)
+print(pt1.__dict__)
+print(Point.__dict__)
