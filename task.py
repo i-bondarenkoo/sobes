@@ -70,14 +70,14 @@ class TaskManager:
             self.tasks.append(task)
 
     def add_more_tasks(self, *task):
-        for t in task:
-            if not isinstance(t, Task):
-                raise TypeError("Объект не относится к классу Task")
-        new_titles = {t.title for t in task}
-        for e in self.tasks:
-            if e.title in new_titles:
-                raise ValueError("Задача уже добавлена в список")
-        self.tasks.extend(task)
+        d1 = {}
+        for elements in self.tasks:
+            d1["title"] = elements.title
+            print(d1)
+        for new_el in task:
+            if new_el.title in d1.keys():
+                raise ValueError("Задача с таким названием уже добавлена в список")
+            self.tasks.append(new_el)
 
     def __str__(self):
         values = "\n".join(str(task) for task in self.tasks)
@@ -89,6 +89,6 @@ t2 = Task("Тестовая задача 1", "Проверка", 1)
 t3 = Task("Тестовая задача 3", "Проверка", 2)
 
 tm = TaskManager()
-# tm.add_task(t1)
+tm.add_task(t1)
 tm.add_more_tasks(t1, t2)
 print(tm)
