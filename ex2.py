@@ -1,35 +1,31 @@
-import math
+class Clock:
+    __DAY = 86400  # число сек в одном дне
+
+    def __init__(self, seconds: int):
+        if not isinstance(seconds, int):
+            raise TypeError("Секунды должны быть целым числом")
+        self.seconds = seconds % self.__DAY
+
+    @classmethod
+    def __verify_data(cls, value):
+        if not isinstance(value, (int, Clock)):
+            raise TypeError("ОПеранд справа должен иметь тип int или Clock")
+
+        return value if isinstance(value, int) else value.seconds
+
+    def __eq__(self, value):
+        sc = Clock.__verify_data(value)
+        return self.seconds == sc
+
+    def __lt__(self, value):
+        sc = Clock.__verify_data(value)
+        return self.seconds < sc
+
+    def __gt__(self, value):
+        sc = Clock.__verify_data(value)
+        return self.seconds > sc
 
 
-class StripChars:
-    def __init__(self, chars):
-        self.__counter = 0
-        self.__chars = chars
-
-    def __call__(self, *args, **kwargs):
-        if not isinstance(args[0], str):
-            raise TypeError("Аргумент должен быть строкой")
-
-        return args[0].strip(self.__chars)
-
-
-class Derivate:
-    def __init__(self, func):
-        self.__fn = func
-
-    def __call__(self, x, dx=0.001, *args, **kwargs):
-        return (self.__fn(x + dx) - self.__fn(x)) / dx
-
-
-# @Derivate
-def df_sin(x):
-    return math.sin(x)
-
-
-# df_sin = Derivate(df_sin)
-print(df_sin(math.pi / 3))
-# s1 = StripChars("?:!.; ")
-# s2 = StripChars(" ")
-# res = s1(" Hello World! ")
-# res2 = s2(" Hello World! ")
-# print(res, res2, sep="\n")
+c1 = Clock(1000)
+c2 = Clock(2000)
+print(c1 > 5000)
