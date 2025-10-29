@@ -70,11 +70,20 @@ class TaskManager:
         self.tasks: list[Task] = []
 
     def add_task(self, task: Task):
+        if not isinstance(task, Task):
+            raise TypeError("Задача должна быть объектом Task")
         for elements in self.tasks:
             if elements.title == task.title:
                 raise AttributeError("Задача с таким именем уже существует")
-        if isinstance(task, Task):
-            self.tasks.append(task)
+        self.tasks.append(task)
+
+    def find_task(self, title: str):
+        if not isinstance(title, str):
+            raise TypeError("Название задачи должно быть строкой")
+        for task in self.tasks:
+            if task.title == title:
+                return task
+        raise ValueError("Задача не найдена")
 
     def add_more_tasks(self, *task):
         d1 = {e1.title: e1.title for e1 in self.tasks}
@@ -87,31 +96,15 @@ class TaskManager:
         # print(d1)
 
     def remove_task(self, title: str):
-        found = False
-        if not isinstance(title, str):
-            raise TypeError("Название задачи должно быть строкой")
-        str_title: str = title.lower().strip(TaskManager.DEL_ELEM)
-        print(str_title)
-        for task in self.tasks:
-            if task.title == str_title:
-                self.tasks.remove(task)
-                found = True
-        if found == False:
-            raise ValueError("Задача не найдена в списке")
+        check_task = self.find_task(title)
+        self.tasks.remove(check_task)
 
     def update_task(self, title: str, **kwargs):
-        found = False
-        if not isinstance(title, str):
-            raise TypeError("Название задачи должно быть строкой")
-        for task in self.tasks:
-            if task.title == title:
-                found = True
-                if kwargs.get("new_title") is not None:
-                    task.title = kwargs["new_title"]
-                if kwargs.get("new_description") is not None:
-                    task.description = kwargs["new_description"]
-        if found == False:
-            raise ValueError("Задача не найдена в списке")
+        current_task = self.find_task(title)
+        if kwargs.get("new_title") is not None:
+            current_task.title = kwargs["new_title"]
+        if kwargs.get("new_description") is not None:
+            current_task.description = kwargs["new_description"]
 
     def __str__(self):
         values = "\n".join(str(task) for task in self.tasks)
@@ -123,12 +116,12 @@ t2 = Task("тестовая задача 2", "проверка", 1)
 t3 = Task("тестовая задача 3", "проверка", 2)
 t4 = Task("написать декоратор", "декоратор для подсчета времени", 2)
 tm = TaskManager()
-tm.add_task(t1)
-tm.add_task(t4)
-tm.add_more_tasks(t3, t2)
-# print("---")
+tm.add_task(t3)
 print(tm)
-# tm.remove_task("/НАписать декоратор")
+# tm.add_more_tasks(t2, t4)
 # print(tm)
-tm.update_task("тестовая задача 1", new_description="123")
+# print("-----")
+# tm.remove_task("написать декоратор")
+# print(tm)
+tm.update_task("тестовая задача 3", new_description="22", new_title="jopa")
 print(tm)
