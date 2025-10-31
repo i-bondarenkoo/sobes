@@ -1,0 +1,1 @@
+from example.base_notification import BaseNotification
