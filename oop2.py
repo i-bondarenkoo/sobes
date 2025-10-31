@@ -11,11 +11,11 @@ class Point:
             self.x = x
             self.y = y
 
-    def __getattribute__(self, name):
-        if name == "x":
-            raise ValueError("Доступ запрещен")
-        else:
-            return object.__getattribute__(self, name)
+    # def __getattribute__(self, name):
+    #     if name == "x":
+    #         raise ValueError("Доступ запрещен")
+    #     else:
+    #         return object.__getattribute__(self, name)
 
     def __setattr__(self, name, value):
         if name == "z":
@@ -30,8 +30,20 @@ class Point:
         print("__delattr__" + name)
         object.__delattr__(self, name)
 
+    def __len__(self):
+        print("__len__")
+        return self.x * self.x + self.y * self.y
 
-pt1 = Point(1, 2)
-pt2 = Point(10, 20)
-print(pt1.__dict__)
-print(Point.__dict__)
+    def __bool__(self):
+        print("__bool__")
+        return self.x == self.y
+
+
+pt1 = Point(12, 12)
+if pt1:
+    print("объект p дает True")
+else:
+    print("объект р дает False")
+# pt2 = Point(10, 20)
+# print(pt1.__dict__)
+# print(Point.__dict__)
